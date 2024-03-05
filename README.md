@@ -26,8 +26,9 @@ By default, tests will run in the Electron browser. To specify a different brows
 For more options and configurations, refer to the Cypress documentation: [Cypress Configuration](https://docs.cypress.io/guides/references/configuration.html)
 
 
-## Additional Detals and Testing Notes
+## Additional Details and Testing Notes
 
+I wanted to make notes of additional test cases I was thinking about covering, however, with the limited time, I did not implement in cypress. However, with more time, these were some additional cases I would have like to have seen covered.
 
 **Shuffle Piles:**
 - Assert that the order of cards in the pile has changed after shuffling.
