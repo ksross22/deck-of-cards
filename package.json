@@ -1,0 +1,10 @@
+{
+    "name": "perceptyx-deck-of-cards-api",
+    "version": "1.0.0",
+    "scripts": {
+      "cypress:open": "cypress open"
+    },
+    "dependencies": {
+      "cypress": "^10.2.3"
+    }
+  }
