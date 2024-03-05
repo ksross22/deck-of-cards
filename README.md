@@ -6,7 +6,7 @@ This repository contains a test suite built with Cypress for testing Deck of Car
 ## Installation
 
 1. Clone this repository to your local machine:
-`git clone [repository-url]`
+`git clone https://github.com/ksross22/deck-of-cards.git`
 
 2. Navigate to the project directory:
 `cd deck-of-cards`
