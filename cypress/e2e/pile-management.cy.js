@@ -13,7 +13,6 @@ describe('Pile Management Tests', () => {
       expect(response.body).to.have.property('shuffled', false);
       deckId = response.body.deck_id; // Assign the deck_id to the variable
     });
-    cy.wait(1000)
   });
 
   ///https://www.deckofcardsapi.com/api/deck/<<deck_id>>/draw/bottom/

@@ -11,7 +11,6 @@ describe('Deck Management Tests', () => {
       expect(response.body).to.have.property('shuffled', false); // Ensure the new deck is not yet shuffled
       deckId = response.body.deck_id; // Assign the deck_id to the variable
     });
-    cy.wait(1000)
   });
 
   it('Add Jokers to the Deck and shuffle', () => {
