@@ -28,6 +28,27 @@ For more options and configurations, refer to the Cypress documentation: [Cypres
 
 ## Additional Details and Testing Notes
 
+**Scenarios Covered:**
+- Brand New Deck of Cards
+- Shuffled Deck of Cards
+- Reshuffled Deck of Cards
+- Partial Deck of Cards
+- Adding to "my" Pile
+- Shuffling Piles
+- Listing the cards in my pile
+- Drawing from my pile
+- Returning card I drew back to the deck
+- Card Images 
+    - Cards drawn have images
+    - Back of Card images API success
+
+**Scenarios that ran into issues:**
+- Draw from Bottom/Top of deck
+- Draw random cards from deck
+- Return cards to pile that were previously drawn
+
+
+
 I wanted to make notes of additional test cases I was thinking about covering, however, with the limited time, I did not implement in cypress. However, with more time, these were some additional cases I would have like to have seen covered.
 
 **Shuffle Piles:**
@@ -38,8 +59,7 @@ I wanted to make notes of additional test cases I was thinking about covering, h
 - Confirm that an appropriate error message is returned when attempting to shuffle piles with multiple decks.
 - Ensure that the pile remains unchanged if shuffling with multiple decks is attempted.
 
-**List cards in piles:**
-- Check that the response includes the expected cards in the pile.
+**List cards in pile (partial):**
 - Verify that the order of cards in the list matches the order in the pile.
 
 **Verify List cards in piles doesn’t work with multiple decks:**
@@ -53,13 +73,10 @@ I wanted to make notes of additional test cases I was thinking about covering, h
     - Check that the drawn cards match the expected cards.
 
 **Return cards to deck:**
-- Ensure that the returned cards are added back to the deck.
-- Verify that the number of remaining cards in the pile has increased by the appropriate amount.
 - Check that the returned cards are present in the deck after returning.
 
 **Test to cover validation of card image:**
-- Verify that the card image URLs returned in the response are valid and accessible.
-- Check that the card images are correctly displayed when accessed.
+- Validate URL pattern with code/file name
 
 **Partial deck scenario:**
 - Verify that the drawn cards are not present in the remaining cards after drawing.
