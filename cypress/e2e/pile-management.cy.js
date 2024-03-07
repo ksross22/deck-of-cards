@@ -38,7 +38,6 @@ describe('Pile Management Tests', () => {
   });
 
   it('Validate and List the cards in my pile', () => {
-    // list cards in my pile
     cy.request('GET', `${url}/${deckId}/pile/${pileName}/list`).then((response) => {
       cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
       expect(response.body.piles[pileName]).to.have.property('remaining', 2);
@@ -48,6 +47,41 @@ describe('Pile Management Tests', () => {
     });
   });
 
+  it('Shuffle Specific Pile', () => {
+    // Shuffle a specific pile of cards
+    cy.request('GET', `${url}/${deckId}/pile/${pileName}/shuffle/`).then((response) => {
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
+      expect(response.body).to.have.property('deck_id', deckId); // Ensure the response contains a deck_id
+      expect(response.body).to.have.property('piles'); // ensure piles property
+      expect(response.body.piles).to.have.property(pileName); // ensure pile name
+      // TODO: Expand on this test
+      // I would like to do more to ensure the order of the cards are different but in my case above 
+      // I only have 2 cards in the pile and would need to expand on this likely by drawing more/adding more 
+      // to my piles and creating a method to validate via iteration instead of singular expect statements
+    });
+  });  
+
+  it('Draw 1 card from my pile', () => {
+    cy.request('GET', `${url}/${deckId}/pile/${pileName}/draw/?count=1`).then((response) => {
+      expect(response.status).to.equal(200); // Ensure the response status
+      expect(response.body).to.have.property('success', true); // Assert Success property
+      expect(response.body).to.have.property('deck_id', deckId); // Ensure the response contains a deck_id
+      expect(response.body).to.have.property('cards').with.lengthOf(1);
+      drawnCards = response.body.cards
+    });
+  });
+
+  // This request doesn't seem to work (or the documentation isn't clear enough) so returning directly back to deck
+  // https://www.deckofcardsapi.com/api/deck/<<deck_id>>/pile/<<pile_name>>/return/?cards=AS,2S
+
+  it('Returns cards to the deck', () => {
+    cy.request('GET', `${url}/${deckId}/return/?cards=${drawnCards[0].code}`).then((response) => {
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 50});
+      // I also noticed in the response that the pile name is not in the body so I would
+      // likely want to check to see if the pile still exists, and that the card I put back into the deck from the pile
+      // is no longer in my pile
+    });
+  });
 
   ///https://www.deckofcardsapi.com/api/deck/<<deck_id>>/draw/bottom/
 
@@ -76,19 +110,7 @@ describe('Pile Management Tests', () => {
   //       }
   //   }
 
-  it('Shuffle Specific Pile', () => {
-    // Shuffle a specific pile of cards
-    cy.request('GET', `${url}/${deckId}/pile/${pileName}/shuffle/`).then((response) => {
-      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
-      expect(response.body).to.have.property('deck_id', deckId); // Ensure the response contains a deck_id
-      expect(response.body).to.have.property('piles'); // ensure piles property
-      expect(response.body.piles).to.have.property(pileName); // ensure pile name
-      // TODO: Expand on this test
-      // I would like to do more to ensure the order of the cards are different but in my case above 
-      // I only have 2 cards in the pile and would need to expand on this likely by drawing more/adding more 
-      // to my piles and creating a method to validate via iteration instead of singular expect statements
-    });
-  });  
+  
 });
 
   

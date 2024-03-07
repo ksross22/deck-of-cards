@@ -1,7 +1,8 @@
 
 describe('New Deck Tests', () => {
     const url = Cypress.config('baseUrl')
-  
+    const imgUrl = 'https://www.deckofcardsapi.com/static/img/back.png' 
+
     it('Create a new Deck', () => {
         // Create a new deck 
         cy.request('GET', `${url}/new`).then((response) => {
@@ -49,6 +50,12 @@ describe('New Deck Tests', () => {
                     expect(imageResponse.status).to.equal(200); // Ensure the image URL returns a 200 status code
                 });
             });
+        });
+    });
+
+    it('Validates card back of card image URLs', () => {
+        cy.request('GET', `${imgUrl}`).then((response) => {
+            expect(response.status).to.equal(200); // Ensure the API request is successful
         });
     });
 });
