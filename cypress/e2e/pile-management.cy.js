@@ -3,7 +3,7 @@ describe('Pile Management Tests', () => {
   let deckId;
   // Define a variable to store the pile name
   let pileName = 'my_pile';
-
+  let drawnCards;
   const url = Cypress.config('baseUrl')
 
   before(() => {
@@ -14,6 +14,40 @@ describe('Pile Management Tests', () => {
       deckId = response.body.deck_id; // Assign the deck_id to the variable
     });
   });
+
+  it('Draw one card', () => {
+    // Include specific cards in a pile
+    cy.request('GET', `${url}/${deckId}/draw/?count=1`).then((response) => {
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 51});
+      expect(response.body).to.have.property('cards').with.lengthOf(1);
+    });
+  });
+
+  it('Draw another two cards and add to my pile', () => {
+    // Include specific cards in a pile
+    cy.request('GET', `${url}/${deckId}/draw/?count=2`).then((response) => {
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
+      expect(response.body).to.have.property('cards').with.lengthOf(2);
+      drawnCards = response.body.cards
+      cy.request('GET', `${url}/${deckId}/pile/${pileName}/add/?cards=${drawnCards[0].code},${drawnCards[1].code}`).then((response) => {
+        cy.log(response)
+        expect(response.body.piles[pileName]).to.have.property('remaining', 2);
+        
+      });
+    });
+  });
+
+  it('Validate and List the cards in my pile', () => {
+    // list cards in my pile
+    cy.request('GET', `${url}/${deckId}/pile/${pileName}/list`).then((response) => {
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
+      expect(response.body.piles[pileName]).to.have.property('remaining', 2);
+      expect(response.body.piles[pileName]).to.have.property('cards').with.lengthOf(2);
+      expect(response.body.piles[pileName].cards[0].code).to.equal(drawnCards[0].code);
+      expect(response.body.piles[pileName].cards[1].code).to.equal(drawnCards[1].code);
+    });
+  });
+
 
   ///https://www.deckofcardsapi.com/api/deck/<<deck_id>>/draw/bottom/
 
@@ -29,8 +63,8 @@ describe('Pile Management Tests', () => {
   //   });
   // });
 
-  // Noticed that this also doesn't appear to be fully working. The cards don't appear
-  // to be moving into the piles property as an example:
+  // Noticed that this also doesn't appear to be working at least how i initially assumed. The cards don't appear
+  // to be moving into the piles property without drawing the cards first (which in play makes sense but isn't specified in documentation)
   //   "body": {
   //       "success": true,
   //       "deck_id": "zbzmxoavqz43",
@@ -41,29 +75,18 @@ describe('Pile Management Tests', () => {
   //           }
   //       }
   //   }
-  // This would fail QA and fail the cypress test (i commented out for the interview)
-  // because 5 cards should have been moved from remaining into 'my_pile' so.. 
-  it('Add specific Cards to Pile', () => {
-    // Include specific cards in a pile
-    cy.request('GET', `${url}/${deckId}/pile/${pileName}/add/?cards=AS,2S,3S,4H,QD`).then((response) => {
-      cy.log("Setting this up for the next text to shuffle this pile")
-      // cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 47});
-      // expect(response.body).to.have.property('deck_id', deckId); // Ensure the response contains a deck_id
-      // expect(response.body).to.have.property('piles'); // ensure piles property
-      // expect(response.body.piles).to.have.property(pileName); // ensure pile name
-      // expect(response.body.piles[pileName]).to.have.property('remaining', 5);
-      // cy.log(response)
-    });
-  });
 
   it('Shuffle Specific Pile', () => {
     // Shuffle a specific pile of cards
     cy.request('GET', `${url}/${deckId}/pile/${pileName}/shuffle/`).then((response) => {
-      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 52});
+      cy.validateBasicResponse({response: response, status: 200, success: true, remaining: 49});
       expect(response.body).to.have.property('deck_id', deckId); // Ensure the response contains a deck_id
       expect(response.body).to.have.property('piles'); // ensure piles property
       expect(response.body.piles).to.have.property(pileName); // ensure pile name
-      
+      // TODO: Expand on this test
+      // I would like to do more to ensure the order of the cards are different but in my case above 
+      // I only have 2 cards in the pile and would need to expand on this likely by drawing more/adding more 
+      // to my piles and creating a method to validate via iteration instead of singular expect statements
     });
   });  
 });
